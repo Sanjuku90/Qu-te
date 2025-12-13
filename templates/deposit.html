@@ -39,6 +39,54 @@
         </div>
     </div>
     
+    <div class="deposit-request-section">
+        <div class="deposit-card">
+            <h2><i class="fas fa-paper-plane"></i> Soumettre une demande de dépôt</h2>
+            <p class="deposit-info">Après avoir envoyé vos cryptos, soumettez votre demande pour validation</p>
+            <form method="POST" action="{{ url_for('request_deposit') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="amount">Montant envoyé (USDT)</label>
+                    <input type="number" id="request-amount" name="amount" step="0.01" min="200" required placeholder="200.00">
+                </div>
+                <div class="form-group">
+                    <label for="tx_hash">Hash de transaction (optionnel)</label>
+                    <input type="text" id="tx_hash" name="tx_hash" placeholder="0x...">
+                    <small class="form-hint">Le hash de votre transaction blockchain pour vérification</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <i class="fas fa-paper-plane"></i> Soumettre la demande
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    {% if transactions %}
+    <div class="pending-transactions-section">
+        <h3><i class="fas fa-clock"></i> Vos demandes récentes</h3>
+        <div class="transactions-list">
+            {% for tx in transactions %}
+            <div class="transaction-item status-{{ tx.status }}">
+                <div class="tx-info">
+                    <span class="tx-type">{{ 'Dépôt' if tx.type == 'deposit' else 'Retrait' }}</span>
+                    <span class="tx-amount">{{ "%.2f"|format(tx.amount) }}$</span>
+                </div>
+                <div class="tx-status">
+                    {% if tx.status == 'pending' %}
+                        <span class="badge badge-warning"><i class="fas fa-clock"></i> En attente</span>
+                    {% elif tx.status == 'approved' %}
+                        <span class="badge badge-success"><i class="fas fa-check"></i> Approuvée</span>
+                    {% else %}
+                        <span class="badge badge-danger"><i class="fas fa-times"></i> Rejetée</span>
+                    {% endif %}
+                </div>
+                <div class="tx-date">{{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="deposit-grid">
         <div class="deposit-card">
             <h2>Votre solde</h2>

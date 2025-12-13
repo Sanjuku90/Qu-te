@@ -2037,3 +2037,132 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==================== DEPOSIT REQUEST SECTION ==================== */
+.deposit-request-section {
+    margin-bottom: 2rem;
+}
+
+.deposit-request-section .deposit-card h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.deposit-request-section .deposit-card h2 i {
+    color: var(--primary-light);
+}
+
+.form-hint {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* ==================== PENDING TRANSACTIONS ==================== */
+.pending-transactions-section {
+    margin-bottom: 2rem;
+}
+
+.pending-transactions-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.pending-transactions-section h3 i {
+    color: var(--warning);
+}
+
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.transaction-item {
+    background: var(--surface);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.transaction-item.status-pending {
+    border-left: 3px solid var(--warning);
+}
+
+.transaction-item.status-approved {
+    border-left: 3px solid var(--success);
+}
+
+.transaction-item.status-rejected {
+    border-left: 3px solid var(--error);
+}
+
+.tx-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tx-type {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.tx-amount {
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 1.1rem;
+}
+
+.tx-status .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.tx-status .badge-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--warning);
+}
+
+.tx-status .badge-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
+.tx-status .badge-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--error);
+}
+
+.tx-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .tx-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
