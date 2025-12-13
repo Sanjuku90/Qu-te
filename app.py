@@ -37,10 +37,38 @@ def admin_required(f):
 def init_quests():
     if Quest.query.count() == 0:
         quests = [
-            Quest(title="Quête du Guerrier", description="Complétez 10 combats virtuels", icon="sword"),
-            Quest(title="Quête du Sage", description="Répondez à 5 énigmes", icon="book"),
-            Quest(title="Quête de l'Explorateur", description="Découvrez 3 nouveaux territoires", icon="map"),
-            Quest(title="Quête du Collectionneur", description="Trouvez 7 objets rares", icon="gem"),
+            Quest(
+                title="Suivre MrBeast sur YouTube",
+                description="Abonnez-vous à la chaîne YouTube de MrBeast",
+                icon="youtube",
+                order=1,
+                action_url="https://www.youtube.com/@MrBeast",
+                action_type="subscribe"
+            ),
+            Quest(
+                title="Suivre sur Instagram",
+                description="Suivez notre compte Instagram officiel",
+                icon="instagram",
+                order=2,
+                action_url="https://www.instagram.com/mrbeast",
+                action_type="follow"
+            ),
+            Quest(
+                title="Rejoindre Telegram",
+                description="Rejoignez notre groupe Telegram",
+                icon="telegram",
+                order=3,
+                action_url="https://t.me/mrbeast",
+                action_type="join"
+            ),
+            Quest(
+                title="Suivre sur TikTok",
+                description="Suivez notre compte TikTok",
+                icon="tiktok",
+                order=4,
+                action_url="https://www.tiktok.com/@mrbeast",
+                action_type="follow"
+            ),
         ]
         for quest in quests:
             db.session.add(quest)

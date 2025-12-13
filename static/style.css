@@ -2173,3 +2173,166 @@ body {
         justify-content: space-between;
     }
 }
+
+/* ==================== SEQUENTIAL QUESTS ==================== */
+.quests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.quest-card-horizontal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--transition);
+}
+
+.quest-card-horizontal:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.quest-card-horizontal.completed {
+    opacity: 0.6;
+    border-color: var(--success);
+}
+
+.quest-card-horizontal.locked {
+    opacity: 0.5;
+    background: var(--background);
+}
+
+.quest-number {
+    width: 36px;
+    height: 36px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.quest-card-horizontal.locked .quest-number {
+    background: var(--surface-lighter);
+}
+
+.quest-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--surface-light);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.quest-icon-box .fab, .quest-icon-box .fas {
+    color: var(--primary-light);
+}
+
+.quest-icon-box .fa-youtube { color: #ff0000; }
+.quest-icon-box .fa-instagram { color: #e1306c; }
+.quest-icon-box .fa-telegram { color: #0088cc; }
+.quest-icon-box .fa-tiktok { color: #fff; }
+.quest-icon-box .fa-twitter { color: #1da1f2; }
+.quest-icon-box .fa-facebook { color: #1877f2; }
+
+.quest-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.quest-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.quest-content p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.quest-reward-badge {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--gold);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.quest-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.quest-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.quest-status-badge.completed {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
+.quest-status-badge.locked {
+    background: var(--surface-lighter);
+    color: var(--text-muted);
+}
+
+.quest-status-badge.disabled {
+    background: var(--surface-light);
+    color: var(--text-muted);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .quest-card-horizontal {
+        flex-wrap: wrap;
+    }
+    
+    .quest-content {
+        flex: 1 1 100%;
+        order: 3;
+        margin-top: 0.5rem;
+    }
+    
+    .quest-reward-badge {
+        order: 2;
+        margin-left: auto;
+    }
+    
+    .quest-actions {
+        flex: 1 1 100%;
+        order: 4;
+        margin-top: 0.75rem;
+        justify-content: flex-end;
+    }
+}

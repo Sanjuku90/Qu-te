@@ -31,28 +31,48 @@
     {% endif %}
     
     <h2 style="margin-bottom: 1.5rem;">Quêtes disponibles</h2>
-    <div class="quests-grid">
-        {% for quest in quests %}
-        <div class="quest-card {% if quest.id in completed_quest_ids %}completed{% endif %}" id="quest-{{ quest.id }}">
-            <div class="quest-icon">
-                {% if quest.icon == 'sword' %}⚔️
-                {% elif quest.icon == 'book' %}📚
-                {% elif quest.icon == 'map' %}🗺️
-                {% elif quest.icon == 'gem' %}💎
-                {% else %}⭐{% endif %}
+    <div class="quests-list">
+        {% for quest in quests|sort(attribute='order') %}
+        {% set is_completed = quest.id in completed_quest_ids %}
+        {% set previous_completed = loop.first or (quests|sort(attribute='order'))[loop.index0 - 1].id in completed_quest_ids %}
+        {% set is_unlocked = previous_completed and not is_completed %}
+        
+        <div class="quest-card-horizontal {% if is_completed %}completed{% elif not previous_completed %}locked{% endif %}" id="quest-{{ quest.id }}">
+            <div class="quest-number">{{ loop.index }}</div>
+            <div class="quest-icon-box">
+                {% if quest.icon == 'youtube' %}<i class="fab fa-youtube"></i>
+                {% elif quest.icon == 'instagram' %}<i class="fab fa-instagram"></i>
+                {% elif quest.icon == 'telegram' %}<i class="fab fa-telegram"></i>
+                {% elif quest.icon == 'tiktok' %}<i class="fab fa-tiktok"></i>
+                {% elif quest.icon == 'twitter' %}<i class="fab fa-twitter"></i>
+                {% elif quest.icon == 'facebook' %}<i class="fab fa-facebook"></i>
+                {% else %}<i class="fas fa-star"></i>{% endif %}
             </div>
-            <h3>{{ quest.title }}</h3>
-            <p>{{ quest.description }}</p>
-            <div class="quest-reward">
+            <div class="quest-content">
+                <h3>{{ quest.title }}</h3>
+                <p>{{ quest.description }}</p>
+            </div>
+            <div class="quest-reward-badge">
                 +{{ "%.2f"|format(current_user.deposit * 0.5) }}$
             </div>
-            {% if quest.id in completed_quest_ids %}
-                <button class="btn btn-disabled" disabled>Complétée ✓</button>
-            {% elif current_user.deposit > 0 and completed_today < 4 %}
-                <button class="btn btn-primary" onclick="completeQuest({{ quest.id }})">Compléter</button>
-            {% else %}
-                <button class="btn btn-disabled" disabled>Non disponible</button>
-            {% endif %}
+            <div class="quest-actions">
+                {% if is_completed %}
+                    <span class="quest-status-badge completed"><i class="fas fa-check"></i> Complétée</span>
+                {% elif is_unlocked and current_user.deposit > 0 %}
+                    {% if quest.action_url %}
+                    <a href="{{ quest.action_url }}" target="_blank" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Effectuer
+                    </a>
+                    {% endif %}
+                    <button class="btn btn-primary btn-sm" onclick="completeQuest({{ quest.id }})">
+                        <i class="fas fa-check"></i> Valider
+                    </button>
+                {% elif not previous_completed %}
+                    <span class="quest-status-badge locked"><i class="fas fa-lock"></i> Verrouillée</span>
+                {% else %}
+                    <span class="quest-status-badge disabled">Non disponible</span>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -65,13 +85,17 @@
         </div>
         
         <div id="withdraw-form" class="withdraw-section" style="display: none;">
-            <form method="POST" action="{{ url_for('withdraw') }}">
+            <form method="POST" action="{{ url_for('request_withdrawal') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label>Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}$)</label>
                     <input type="number" name="amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required placeholder="0.00">
                 </div>
-                <button type="submit" class="btn btn-primary">Confirmer le retrait</button>
+                <div class="form-group">
+                    <label>Adresse de portefeuille (BEP20)</label>
+                    <input type="text" name="wallet_address" required placeholder="0x...">
+                </div>
+                <button type="submit" class="btn btn-primary">Demander le retrait</button>
             </form>
         </div>
     </div>

@@ -39,6 +39,9 @@ class Quest(db.Model):
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     icon = db.Column(db.String(50), default='star')
+    order = db.Column(db.Integer, default=1)
+    action_url = db.Column(db.String(500))
+    action_type = db.Column(db.String(50), default='follow')
     
 class QuestCompletion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
