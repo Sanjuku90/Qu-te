@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 from models import db, User, Quest, QuestCompletion
 from datetime import date
 
@@ -8,8 +9,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['WTF_CSRF_TIME_LIMIT'] = None
 
 db.init_app(app)
+csrf = CSRFProtect(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -36,6 +39,10 @@ with app.app_context():
     db.create_all()
     init_quests()
 
+@app.context_processor
+def inject_csrf_token():
+    return dict(csrf_token=generate_csrf)
+
 @app.route('/')
 def index():
     if current_user.is_authenticated:
@@ -48,9 +55,17 @@ def register():
         return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        
+        if not username or not email or not password:
+            flash('Tous les champs sont requis.', 'error')
+            return redirect(url_for('register'))
+        
+        if len(password) < 6:
+            flash('Le mot de passe doit contenir au moins 6 caractères.', 'error')
+            return redirect(url_for('register'))
         
         if User.query.filter_by(username=username).first():
             flash('Ce nom d\'utilisateur existe déjà.', 'error')
@@ -76,8 +91,8 @@ def login():
         return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
         
         user = User.query.filter_by(email=email).first()
         
@@ -117,25 +132,43 @@ def dashboard():
 @login_required
 def deposit():
     if request.method == 'POST':
-        amount = float(request.form.get('amount', 0))
-        if amount > 0:
-            current_user.deposit += amount
-            current_user.balance -= amount
-            db.session.commit()
-            flash(f'Dépôt de {amount}€ effectué avec succès!', 'success')
-        else:
+        try:
+            amount = float(request.form.get('amount', 0))
+        except (ValueError, TypeError):
             flash('Montant invalide.', 'error')
+            return redirect(url_for('deposit'))
+        
+        if amount <= 0:
+            flash('Le montant doit être positif.', 'error')
+            return redirect(url_for('deposit'))
+        
+        if amount > current_user.balance:
+            flash('Solde insuffisant pour ce dépôt.', 'error')
+            return redirect(url_for('deposit'))
+        
+        current_user.deposit += amount
+        current_user.balance -= amount
+        db.session.commit()
+        flash(f'Dépôt de {amount:.2f}€ effectué avec succès!', 'success')
         return redirect(url_for('dashboard'))
     return render_template('deposit.html')
 
 @app.route('/add_balance', methods=['POST'])
 @login_required
 def add_balance():
-    amount = float(request.form.get('amount', 0))
-    if amount > 0:
-        current_user.balance += amount
-        db.session.commit()
-        flash(f'{amount}€ ajoutés à votre solde!', 'success')
+    try:
+        amount = float(request.form.get('amount', 0))
+    except (ValueError, TypeError):
+        flash('Montant invalide.', 'error')
+        return redirect(url_for('deposit'))
+    
+    if amount <= 0 or amount > 10000:
+        flash('Montant invalide (max 10000€ en mode démo).', 'error')
+        return redirect(url_for('deposit'))
+    
+    current_user.balance += amount
+    db.session.commit()
+    flash(f'{amount:.2f}€ ajoutés à votre solde (mode démo).', 'success')
     return redirect(url_for('deposit'))
 
 @app.route('/complete_quest/<int:quest_id>', methods=['POST'])
@@ -177,13 +210,23 @@ def complete_quest(quest_id):
 @app.route('/withdraw', methods=['POST'])
 @login_required
 def withdraw():
-    amount = float(request.form.get('amount', 0))
-    if amount > 0 and amount <= current_user.balance:
-        current_user.balance -= amount
-        db.session.commit()
-        flash(f'Retrait de {amount}€ effectué!', 'success')
-    else:
-        flash('Montant invalide ou solde insuffisant.', 'error')
+    try:
+        amount = float(request.form.get('amount', 0))
+    except (ValueError, TypeError):
+        flash('Montant invalide.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    if amount <= 0:
+        flash('Le montant doit être positif.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    if amount > current_user.balance:
+        flash('Solde insuffisant.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    current_user.balance -= amount
+    db.session.commit()
+    flash(f'Retrait de {amount:.2f}€ effectué!', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/history')

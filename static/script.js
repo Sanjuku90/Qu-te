@@ -3,10 +3,13 @@ function completeQuest(questId) {
     button.disabled = true;
     button.textContent = 'En cours...';
     
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
     fetch(`/complete_quest/${questId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
         }
     })
     .then(response => response.json())

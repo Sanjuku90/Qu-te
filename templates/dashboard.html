@@ -66,6 +66,7 @@
         
         <div id="withdraw-form" class="withdraw-section" style="display: none;">
             <form method="POST" action="{{ url_for('withdraw') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label>Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}€)</label>
                     <input type="number" name="amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required>
