@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-exchange-alt"></i> Gestion des Transactions</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline btn-sm">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    <div class="admin-filters">
+        <div class="filter-group">
+            <label>Statut:</label>
+            <div class="filter-buttons">
+                <a href="?status=pending&type={{ type_filter }}" class="filter-btn {{ 'active' if status_filter == 'pending' }}">En attente</a>
+                <a href="?status=approved&type={{ type_filter }}" class="filter-btn {{ 'active' if status_filter == 'approved' }}">Approuvées</a>
+                <a href="?status=rejected&type={{ type_filter }}" class="filter-btn {{ 'active' if status_filter == 'rejected' }}">Rejetées</a>
+                <a href="?status=all&type={{ type_filter }}" class="filter-btn {{ 'active' if status_filter == 'all' }}">Toutes</a>
+            </div>
+        </div>
+        <div class="filter-group">
+            <label>Type:</label>
+            <div class="filter-buttons">
+                <a href="?status={{ status_filter }}&type=all" class="filter-btn {{ 'active' if type_filter == 'all' }}">Tous</a>
+                <a href="?status={{ status_filter }}&type=deposit" class="filter-btn {{ 'active' if type_filter == 'deposit' }}">Dépôts</a>
+                <a href="?status={{ status_filter }}&type=withdrawal" class="filter-btn {{ 'active' if type_filter == 'withdrawal' }}">Retraits</a>
+            </div>
+        </div>
+    </div>
+    
+    {% if transactions %}
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>Détails</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    {% if status_filter == 'pending' %}
+                    <th>Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>#{{ tx.id }}</td>
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-avatar-small">{{ tx.user.username[0]|upper }}</span>
+                            <span>{{ tx.user.username }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if tx.type == 'deposit' else 'warning' }}">
+                            {{ 'Dépôt' if tx.type == 'deposit' else 'Retrait' }}
+                        </span>
+                    </td>
+                    <td class="amount">{{ "%.2f"|format(tx.amount) }}$</td>
+                    <td class="details-cell">
+                        {% if tx.type == 'deposit' and tx.tx_hash %}
+                            <small>TX: {{ tx.tx_hash[:20] }}...</small>
+                        {% elif tx.type == 'withdrawal' and tx.wallet_address %}
+                            <small>{{ tx.wallet_address[:20] }}...</small>
+                        {% else %}
+                            <small class="text-muted">-</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ tx.status }}">
+                            {% if tx.status == 'pending' %}En attente
+                            {% elif tx.status == 'approved' %}Approuvée
+                            {% else %}Rejetée{% endif %}
+                        </span>
+                    </td>
+                    <td>{{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                    {% if status_filter == 'pending' %}
+                    <td class="actions">
+                        <form method="POST" action="{{ url_for('approve_transaction', tx_id=tx.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-icon btn-approve" title="Approuver">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('reject_transaction', tx_id=tx.id) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-icon btn-reject" title="Rejeter">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>Aucune transaction trouvée</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

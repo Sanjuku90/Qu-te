@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-shield-halved"></i> Tableau de bord Admin</h1>
+        <p class="admin-subtitle">Gérez les transactions et les utilisateurs</p>
+    </div>
+    
+    <div class="admin-stats">
+        <div class="admin-stat-card pending">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+                <span class="stat-number">{{ pending_deposits }}</span>
+                <span class="stat-label">Dépôts en attente</span>
+            </div>
+        </div>
+        <div class="admin-stat-card warning">
+            <div class="stat-icon"><i class="fas fa-arrow-right-from-bracket"></i></div>
+            <div class="stat-info">
+                <span class="stat-number">{{ pending_withdrawals }}</span>
+                <span class="stat-label">Retraits en attente</span>
+            </div>
+        </div>
+        <div class="admin-stat-card info">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <span class="stat-number">{{ total_users }}</span>
+                <span class="stat-label">Utilisateurs</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-nav-cards">
+        <a href="{{ url_for('admin_transactions') }}?status=pending" class="admin-nav-card">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transactions</span>
+            <small>Valider les dépôts et retraits</small>
+        </a>
+        <a href="{{ url_for('admin_users') }}" class="admin-nav-card">
+            <i class="fas fa-users-gear"></i>
+            <span>Utilisateurs</span>
+            <small>Gérer les comptes</small>
+        </a>
+    </div>
+    
+    {% if recent_transactions %}
+    <div class="admin-section">
+        <h2>Transactions récentes en attente</h2>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Type</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in recent_transactions %}
+                    <tr>
+                        <td>#{{ tx.id }}</td>
+                        <td>{{ tx.user.username }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'success' if tx.type == 'deposit' else 'warning' }}">
+                                {{ 'Dépôt' if tx.type == 'deposit' else 'Retrait' }}
+                            </span>
+                        </td>
+                        <td class="amount">{{ "%.2f"|format(tx.amount) }}$</td>
+                        <td>{{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="actions">
+                            <form method="POST" action="{{ url_for('approve_transaction', tx_id=tx.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon btn-approve" title="Approuver">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_transaction', tx_id=tx.id) }}" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-icon btn-reject" title="Rejeter">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{{ url_for('admin_transactions') }}" class="btn btn-outline">Voir toutes les transactions</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

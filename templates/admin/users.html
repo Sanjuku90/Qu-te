@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-users"></i> Gestion des Utilisateurs</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline btn-sm">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    {% if users %}
+    <div class="admin-table-container">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Email</th>
+                    <th>Solde</th>
+                    <th>Dépôt actif</th>
+                    <th>Inscrit le</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>#{{ user.id }}</td>
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-avatar-small">{{ user.username[0]|upper }}</span>
+                            <span>{{ user.username }}</span>
+                        </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td class="amount">{{ "%.2f"|format(user.balance) }}$</td>
+                    <td>{{ "%.2f"|format(user.deposit) }}$</td>
+                    <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td class="actions">
+                        <form method="POST" action="{{ url_for('admin_add_balance', user_id=user.id) }}" class="inline-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="number" name="amount" step="0.01" placeholder="Montant" class="input-sm" required>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-users-slash"></i>
+        <p>Aucun utilisateur inscrit</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

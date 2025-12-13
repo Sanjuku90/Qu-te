@@ -19,11 +19,35 @@
                 <span class="logo-text">QuestMoney</span>
             </a>
             
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span class="hamburger"></span>
+            </button>
+            
             {% if current_user.is_authenticated %}
-            <div class="nav-right">
+            <div class="nav-right" id="navRight">
                 <div class="balance-chip">
                     <i class="fas fa-wallet"></i>
                     <span>{{ "%.2f"|format(current_user.balance) }}$</span>
+                </div>
+                
+                <div class="mobile-nav-links">
+                    <a href="{{ url_for('dashboard') }}" class="mobile-nav-item">
+                        <i class="fas fa-gamepad"></i> Quêtes
+                    </a>
+                    <a href="{{ url_for('deposit') }}" class="mobile-nav-item">
+                        <i class="fas fa-plus-circle"></i> Dépôt
+                    </a>
+                    <a href="{{ url_for('history') }}" class="mobile-nav-item">
+                        <i class="fas fa-clock-rotate-left"></i> Historique
+                    </a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="mobile-nav-item admin-link">
+                        <i class="fas fa-shield-halved"></i> Admin
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="mobile-nav-item logout-link">
+                        <i class="fas fa-right-from-bracket"></i> Déconnexion
+                    </a>
                 </div>
                 
                 <div class="user-menu">
@@ -56,6 +80,13 @@
                             <i class="fas fa-clock-rotate-left"></i>
                             <span>Historique</span>
                         </a>
+                        {% if current_user.is_admin %}
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('admin_dashboard') }}" class="dropdown-item dropdown-item-admin">
+                            <i class="fas fa-shield-halved"></i>
+                            <span>Administration</span>
+                        </a>
+                        {% endif %}
                         <div class="dropdown-divider"></div>
                         <a href="{{ url_for('logout') }}" class="dropdown-item dropdown-item-danger">
                             <i class="fas fa-right-from-bracket"></i>
@@ -65,7 +96,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="nav-links">
+            <div class="nav-links" id="navRight">
                 <a href="{{ url_for('login') }}" class="nav-link">Connexion</a>
                 <a href="{{ url_for('register') }}" class="btn btn-primary btn-glow">Commencer</a>
             </div>
@@ -118,14 +149,28 @@
             trigger.classList.toggle('active');
         }
         
+        function toggleMobileMenu() {
+            const navRight = document.getElementById('navRight');
+            const btn = document.querySelector('.mobile-menu-btn');
+            navRight.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+        
         document.addEventListener('click', function(e) {
             const userMenu = document.querySelector('.user-menu');
             const dropdown = document.getElementById('userDropdown');
             const trigger = document.querySelector('.user-menu-trigger');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            const navRight = document.getElementById('navRight');
             
             if (userMenu && !userMenu.contains(e.target)) {
                 dropdown.classList.remove('show');
-                trigger.classList.remove('active');
+                if (trigger) trigger.classList.remove('active');
+            }
+            
+            if (mobileBtn && !mobileBtn.contains(e.target) && navRight && !navRight.contains(e.target)) {
+                navRight.classList.remove('show');
+                mobileBtn.classList.remove('active');
             }
         });
     </script>

@@ -12,9 +12,11 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     balance = db.Column(db.Float, default=0.0)
     deposit = db.Column(db.Float, default=0.0)
+    is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     quests = db.relationship('QuestCompletion', backref='user', lazy=True)
+    transactions = db.relationship('Transaction', backref='user', lazy=True)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -46,3 +48,16 @@ class QuestCompletion(db.Model):
     completed_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     quest = db.relationship('Quest', backref='completions')
+
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    type = db.Column(db.String(20), nullable=False)  # 'deposit' or 'withdrawal'
+    amount = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(20), default='pending')  # 'pending', 'approved', 'rejected'
+    wallet_address = db.Column(db.String(100))
+    tx_hash = db.Column(db.String(100))
+    admin_note = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    processed_at = db.Column(db.DateTime)
+    processed_by = db.Column(db.Integer, db.ForeignKey('user.id'))
