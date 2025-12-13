@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     quests = db.relationship('QuestCompletion', backref='user', lazy=True)
-    transactions = db.relationship('Transaction', backref='user', lazy=True)
+    transactions = db.relationship('Transaction', backref='user', lazy=True, foreign_keys='Transaction.user_id')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
