@@ -21,12 +21,12 @@ function completeQuest(questId) {
             button.classList.remove('btn-primary');
             button.classList.add('btn-disabled');
             
-            document.getElementById('current-balance').textContent = data.new_balance.toFixed(2) + '€';
+            document.getElementById('current-balance').textContent = data.new_balance.toFixed(2) + '$';
             document.getElementById('completed-count').textContent = data.completed_today + '/4';
             
             const balanceDisplay = document.querySelector('.balance-display');
             if (balanceDisplay) {
-                balanceDisplay.textContent = 'Solde: ' + data.new_balance.toFixed(2) + '€';
+                balanceDisplay.textContent = '💰 ' + data.new_balance.toFixed(2) + '$';
             }
             
             showNotification(data.message, 'success');

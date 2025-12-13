@@ -13,7 +13,7 @@
             <a href="{{ url_for('index') }}" class="logo">QuestMoney</a>
             <div class="nav-links">
                 {% if current_user.is_authenticated %}
-                    <span class="balance-display">Solde: {{ "%.2f"|format(current_user.balance) }}€</span>
+                    <span class="balance-display">💰 {{ "%.2f"|format(current_user.balance) }}$</span>
                     <a href="{{ url_for('dashboard') }}">Quêtes</a>
                     <a href="{{ url_for('deposit') }}">Dépôt</a>
                     <a href="{{ url_for('history') }}">Historique</a>

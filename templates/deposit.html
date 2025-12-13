@@ -4,50 +4,107 @@
 <div class="deposit-container">
     <h1>Gérer votre argent</h1>
     
+    <div class="crypto-deposit-section">
+        <div class="crypto-card">
+            <div class="crypto-header">
+                <img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" alt="BNB" class="crypto-logo">
+                <div>
+                    <h2>Dépôt en BNB (BEP20)</h2>
+                    <span class="network-badge">Binance Smart Chain</span>
+                </div>
+            </div>
+            <div class="crypto-address-box">
+                <label>Adresse de dépôt</label>
+                <div class="address-container">
+                    <code id="wallet-address">0x4dc2eac23fa51001d5acc94889177ec066cc389c</code>
+                    <button type="button" class="copy-btn" onclick="copyAddress()">
+                        <span id="copy-text">Copier</span>
+                    </button>
+                </div>
+            </div>
+            <div class="crypto-info">
+                <div class="info-item">
+                    <span class="info-icon">💰</span>
+                    <span>Minimum: <strong>200 USDT</strong></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">⚡</span>
+                    <span>Réseau: <strong>BEP20 (BSC)</strong></span>
+                </div>
+                <div class="info-item warning">
+                    <span class="info-icon">⚠️</span>
+                    <span>Envoyez uniquement des BNB ou USDT sur le réseau BEP20</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="deposit-grid">
         <div class="deposit-card">
-            <h2>Ajouter de l'argent au solde</h2>
-            <p class="current-value">Solde actuel: {{ "%.2f"|format(current_user.balance) }}€</p>
-            <form method="POST" action="{{ url_for('add_balance') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    <label for="amount">Montant à ajouter</label>
-                    <input type="number" id="add-amount" name="amount" step="0.01" min="1" required placeholder="100.00">
-                </div>
-                <button type="submit" class="btn btn-secondary btn-full">Ajouter au solde</button>
-            </form>
+            <h2>Votre solde</h2>
+            <p class="current-value">{{ "%.2f"|format(current_user.balance) }}$</p>
+            <p class="deposit-info">Solde disponible après confirmation du dépôt crypto</p>
         </div>
         
         <div class="deposit-card">
-            <h2>Faire un dépôt pour les quêtes</h2>
-            <p class="current-value">Dépôt actuel: {{ "%.2f"|format(current_user.deposit) }}€</p>
-            <p class="deposit-info">Le dépôt détermine vos gains: 50% de ce montant par quête complétée!</p>
+            <h2>Activer les quêtes</h2>
+            <p class="current-value">Dépôt actuel: {{ "%.2f"|format(current_user.deposit) }}$</p>
+            <p class="deposit-info">Minimum requis: <strong>200$</strong></p>
             <form method="POST" action="{{ url_for('deposit') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="amount">Montant à déposer (depuis votre solde)</label>
-                    <input type="number" id="deposit-amount" name="amount" step="0.01" min="1" max="{{ current_user.balance }}" required placeholder="50.00">
+                    <input type="number" id="deposit-amount" name="amount" step="0.01" min="200" max="{{ current_user.balance }}" required placeholder="200.00">
                 </div>
-                <button type="submit" class="btn btn-primary btn-full" {% if current_user.balance <= 0 %}disabled{% endif %}>
-                    Effectuer le dépôt
+                <button type="submit" class="btn btn-primary btn-full" {% if current_user.balance < 200 %}disabled{% endif %}>
+                    Activer les quêtes
                 </button>
             </form>
-            {% if current_user.balance <= 0 %}
-            <p class="deposit-warning">Ajoutez d'abord de l'argent à votre solde</p>
+            {% if current_user.balance < 200 %}
+            <p class="deposit-warning">Solde minimum de 200$ requis</p>
             {% endif %}
         </div>
     </div>
     
     <div class="deposit-info-section">
-        <h3>Comment fonctionnent les gains?</h3>
-        <ul>
-            <li>Vous déposez un montant de votre choix</li>
-            <li>Chaque quête complétée vous rapporte 50% de ce dépôt</li>
-            <li>Vous pouvez compléter jusqu'à 4 quêtes par jour</li>
-            <li>Exemple: Dépôt de 100€ = 50€ par quête = 200€ max par jour!</li>
-        </ul>
+        <h3>Comment ça fonctionne?</h3>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Envoyez vos cryptos</h4>
+                <p>Envoyez minimum 200$ en BNB ou USDT à l'adresse ci-dessus</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>Confirmation</h4>
+                <p>Votre solde sera crédité après confirmation sur la blockchain</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Activez les quêtes</h4>
+                <p>Déposez depuis votre solde pour débloquer les quêtes</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h4>Gagnez 50%</h4>
+                <p>Chaque quête complétée rapporte 50% de votre dépôt!</p>
+            </div>
+        </div>
     </div>
     
     <a href="{{ url_for('dashboard') }}" class="btn btn-outline">Retour aux quêtes</a>
 </div>
+
+<script>
+function copyAddress() {
+    const address = document.getElementById('wallet-address').textContent;
+    navigator.clipboard.writeText(address).then(() => {
+        const copyText = document.getElementById('copy-text');
+        copyText.textContent = 'Copié!';
+        setTimeout(() => {
+            copyText.textContent = 'Copier';
+        }, 2000);
+    });
+}
+</script>
 {% endblock %}

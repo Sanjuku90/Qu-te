@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ completion.completed_at.strftime('%d/%m/%Y %H:%M') }}</td>
                     <td>{{ completion.quest.title }}</td>
-                    <td class="reward-cell">+{{ "%.2f"|format(completion.reward) }}€</td>
+                    <td class="reward-cell">+{{ "%.2f"|format(completion.reward) }}$</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -27,7 +27,7 @@
     </div>
     
     <div class="history-summary">
-        <p>Total des gains: <strong>{{ "%.2f"|format(completions|sum(attribute='reward')) }}€</strong></p>
+        <p>Total des gains: <strong>{{ "%.2f"|format(completions|sum(attribute='reward')) }}$</strong></p>
     </div>
     {% else %}
     <div class="empty-state">

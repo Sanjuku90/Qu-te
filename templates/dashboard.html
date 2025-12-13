@@ -3,15 +3,15 @@
 {% block content %}
 <div class="dashboard">
     <div class="dashboard-header">
-        <h1>Bonjour, {{ current_user.username }}!</h1>
+        <h1>Bienvenue, {{ current_user.username }} 👋</h1>
         <div class="stats-grid">
             <div class="stat-card">
                 <span class="stat-label">Solde disponible</span>
-                <span class="stat-value" id="current-balance">{{ "%.2f"|format(current_user.balance) }}€</span>
+                <span class="stat-value" id="current-balance">{{ "%.2f"|format(current_user.balance) }}$</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Dépôt actif</span>
-                <span class="stat-value">{{ "%.2f"|format(current_user.deposit) }}€</span>
+                <span class="stat-value">{{ "%.2f"|format(current_user.deposit) }}$</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Quêtes aujourd'hui</span>
@@ -19,18 +19,18 @@
             </div>
             <div class="stat-card">
                 <span class="stat-label">Gain par quête</span>
-                <span class="stat-value">{{ "%.2f"|format(current_user.deposit * 0.5) }}€</span>
+                <span class="stat-value">{{ "%.2f"|format(current_user.deposit * 0.5) }}$</span>
             </div>
         </div>
     </div>
     
     {% if current_user.deposit == 0 %}
     <div class="alert alert-warning">
-        <p>Vous devez effectuer un dépôt pour débloquer les quêtes. <a href="{{ url_for('deposit') }}">Faire un dépôt</a></p>
+        <p>⚠️ Vous devez effectuer un dépôt minimum de 200$ pour débloquer les quêtes. <a href="{{ url_for('deposit') }}">Faire un dépôt</a></p>
     </div>
     {% endif %}
     
-    <h2>Quêtes disponibles</h2>
+    <h2 style="margin-bottom: 1.5rem;">Quêtes disponibles</h2>
     <div class="quests-grid">
         {% for quest in quests %}
         <div class="quest-card {% if quest.id in completed_quest_ids %}completed{% endif %}" id="quest-{{ quest.id }}">
@@ -44,12 +44,12 @@
             <h3>{{ quest.title }}</h3>
             <p>{{ quest.description }}</p>
             <div class="quest-reward">
-                Récompense: {{ "%.2f"|format(current_user.deposit * 0.5) }}€
+                +{{ "%.2f"|format(current_user.deposit * 0.5) }}$
             </div>
             {% if quest.id in completed_quest_ids %}
                 <button class="btn btn-disabled" disabled>Complétée ✓</button>
             {% elif current_user.deposit > 0 and completed_today < 4 %}
-                <button class="btn btn-primary" onclick="completeQuest({{ quest.id }})">Compléter la quête</button>
+                <button class="btn btn-primary" onclick="completeQuest({{ quest.id }})">Compléter</button>
             {% else %}
                 <button class="btn btn-disabled" disabled>Non disponible</button>
             {% endif %}
@@ -60,16 +60,16 @@
     <div class="dashboard-actions">
         <h3>Actions rapides</h3>
         <div class="action-buttons">
-            <a href="{{ url_for('deposit') }}" class="btn btn-secondary">Faire un dépôt</a>
-            <button class="btn btn-outline" onclick="toggleWithdraw()">Retirer des gains</button>
+            <a href="{{ url_for('deposit') }}" class="btn btn-secondary">💰 Faire un dépôt</a>
+            <button class="btn btn-outline" onclick="toggleWithdraw()">💸 Retirer des gains</button>
         </div>
         
         <div id="withdraw-form" class="withdraw-section" style="display: none;">
             <form method="POST" action="{{ url_for('withdraw') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    <label>Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}€)</label>
-                    <input type="number" name="amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required>
+                    <label>Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}$)</label>
+                    <input type="number" name="amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required placeholder="0.00">
                 </div>
                 <button type="submit" class="btn btn-primary">Confirmer le retrait</button>
             </form>

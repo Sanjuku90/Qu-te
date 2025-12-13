@@ -138,8 +138,8 @@ def deposit():
             flash('Montant invalide.', 'error')
             return redirect(url_for('deposit'))
         
-        if amount <= 0:
-            flash('Le montant doit être positif.', 'error')
+        if amount < 200:
+            flash('Le minimum de dépôt est de 200$.', 'error')
             return redirect(url_for('deposit'))
         
         if amount > current_user.balance:
@@ -149,7 +149,7 @@ def deposit():
         current_user.deposit += amount
         current_user.balance -= amount
         db.session.commit()
-        flash(f'Dépôt de {amount:.2f}€ effectué avec succès!', 'success')
+        flash(f'Dépôt de {amount:.2f}$ effectué avec succès!', 'success')
         return redirect(url_for('dashboard'))
     return render_template('deposit.html')
 
@@ -168,7 +168,7 @@ def add_balance():
     
     current_user.balance += amount
     db.session.commit()
-    flash(f'{amount:.2f}€ ajoutés à votre solde (mode démo).', 'success')
+    flash(f'{amount:.2f}$ ajoutés à votre solde (mode démo).', 'success')
     return redirect(url_for('deposit'))
 
 @app.route('/complete_quest/<int:quest_id>', methods=['POST'])
@@ -202,7 +202,7 @@ def complete_quest(quest_id):
     
     return jsonify({
         'success': True, 
-        'message': f'Quête complétée! Vous avez gagné {reward:.2f}€',
+        'message': f'Quête complétée! Vous avez gagné {reward:.2f}$',
         'new_balance': current_user.balance,
         'completed_today': current_user.get_completed_quests_today()
     })
@@ -226,7 +226,7 @@ def withdraw():
     
     current_user.balance -= amount
     db.session.commit()
-    flash(f'Retrait de {amount:.2f}€ effectué!', 'success')
+    flash(f'Retrait de {amount:.2f}$ effectué!', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/history')
