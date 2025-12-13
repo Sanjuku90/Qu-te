@@ -438,6 +438,42 @@ def admin_add_balance(user_id):
     flash(f'{amount:.2f}$ ajoutés au compte de {user.username}.', 'success')
     return redirect(url_for('admin_users'))
 
+@app.route('/admin/quick_add_balance', methods=['POST'])
+@login_required
+@admin_required
+def admin_quick_add_balance():
+    user_email = request.form.get('user_email', '').strip()
+    add_type = request.form.get('add_type', 'balance')
+    
+    try:
+        amount = float(request.form.get('amount', 0))
+    except (ValueError, TypeError):
+        flash('Montant invalide.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    if amount <= 0:
+        flash('Le montant doit être positif.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    user = User.query.filter_by(email=user_email).first()
+    if not user:
+        flash(f'Aucun utilisateur trouvé avec l\'email: {user_email}', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    if user.is_admin:
+        flash('Impossible d\'ajouter des fonds à un compte admin.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    if add_type == 'deposit':
+        user.deposit += amount
+        flash(f'{amount:.2f}$ ajoutés au dépôt actif de {user.username}.', 'success')
+    else:
+        user.balance += amount
+        flash(f'{amount:.2f}$ ajoutés au solde de {user.username}.', 'success')
+    
+    db.session.commit()
+    return redirect(url_for('admin_dashboard'))
+
 @app.after_request
 def add_header(response):
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
