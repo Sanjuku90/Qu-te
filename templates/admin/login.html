@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2><i class="fas fa-lock"></i> Espace Administration</h2>
+        <p class="auth-subtitle">Entrez le code d'accès pour continuer</p>
+        
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="code">Code d'accès</label>
+                <input type="password" id="code" name="code" placeholder="****" required autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">
+                <i class="fas fa-unlock"></i> Accéder
+            </button>
+        </form>
+        
+        <div class="auth-link">
+            <a href="{{ url_for('index') }}"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 import os
 from functools import wraps
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from models import db, User, Quest, QuestCompletion, Transaction
@@ -24,12 +24,13 @@ login_manager.login_message = 'Veuillez vous connecter pour accéder à cette pa
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+ADMIN_CODE = "1289"
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_admin:
-            flash('Accès réservé aux administrateurs.', 'error')
-            return redirect(url_for('index'))
+        if not session.get('admin_access'):
+            return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -331,8 +332,29 @@ def history():
     return render_template('history.html', completions=completions, transactions=transactions)
 
 # Admin Routes
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('admin_access'):
+        return redirect(url_for('admin_dashboard'))
+    
+    if request.method == 'POST':
+        code = request.form.get('code', '')
+        if code == ADMIN_CODE:
+            session['admin_access'] = True
+            flash('Accès administrateur accordé.', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Code incorrect.', 'error')
+    
+    return render_template('admin/login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin_access', None)
+    flash('Déconnexion de l\'espace admin.', 'info')
+    return redirect(url_for('index'))
+
 @app.route('/admin')
-@login_required
 @admin_required
 def admin_dashboard():
     pending_deposits = Transaction.query.filter_by(type='deposit', status='pending').count()
@@ -348,7 +370,6 @@ def admin_dashboard():
                          recent_transactions=recent_transactions)
 
 @app.route('/admin/transactions')
-@login_required
 @admin_required
 def admin_transactions():
     status_filter = request.args.get('status', 'pending')
@@ -370,7 +391,6 @@ def admin_transactions():
                          type_filter=type_filter)
 
 @app.route('/admin/transaction/<int:tx_id>/approve', methods=['POST'])
-@login_required
 @admin_required
 def approve_transaction(tx_id):
     transaction = Transaction.query.get_or_404(tx_id)
@@ -381,7 +401,7 @@ def approve_transaction(tx_id):
     
     transaction.status = 'approved'
     transaction.processed_at = datetime.utcnow()
-    transaction.processed_by = current_user.id
+    transaction.processed_by = current_user.id if current_user.is_authenticated else None
     transaction.admin_note = request.form.get('note', '')
     
     user = User.query.get(transaction.user_id)
@@ -393,7 +413,6 @@ def approve_transaction(tx_id):
     return redirect(url_for('admin_transactions'))
 
 @app.route('/admin/transaction/<int:tx_id>/reject', methods=['POST'])
-@login_required
 @admin_required
 def reject_transaction(tx_id):
     transaction = Transaction.query.get_or_404(tx_id)
@@ -404,7 +423,7 @@ def reject_transaction(tx_id):
     
     transaction.status = 'rejected'
     transaction.processed_at = datetime.utcnow()
-    transaction.processed_by = current_user.id
+    transaction.processed_by = current_user.id if current_user.is_authenticated else None
     transaction.admin_note = request.form.get('note', '')
     
     if transaction.type == 'withdrawal':
@@ -416,14 +435,12 @@ def reject_transaction(tx_id):
     return redirect(url_for('admin_transactions'))
 
 @app.route('/admin/users')
-@login_required
 @admin_required
 def admin_users():
     users = User.query.filter_by(is_admin=False).order_by(User.created_at.desc()).all()
     return render_template('admin/users.html', users=users)
 
 @app.route('/admin/user/<int:user_id>/add_balance', methods=['POST'])
-@login_required
 @admin_required
 def admin_add_balance(user_id):
     user = User.query.get_or_404(user_id)
@@ -439,7 +456,6 @@ def admin_add_balance(user_id):
     return redirect(url_for('admin_users'))
 
 @app.route('/admin/quick_add_balance', methods=['POST'])
-@login_required
 @admin_required
 def admin_quick_add_balance():
     user_email = request.form.get('user_email', '').strip()

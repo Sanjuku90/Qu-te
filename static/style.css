@@ -783,6 +783,13 @@ body {
     text-decoration: underline;
 }
 
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
 /* ==================== DASHBOARD ==================== */
 .dashboard {
     max-width: 1000px;
