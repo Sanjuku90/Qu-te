@@ -1,12 +1,13 @@
 # QuestMoney
 
 ## Overview
-Application web de quêtes permettant aux utilisateurs de gagner de l'argent en complétant des quêtes quotidiennes. Les utilisateurs déposent de l'argent et gagnent 50% de leur dépôt à chaque quête complétée (max 4 quêtes par jour).
+Application web de quêtes permettant aux utilisateurs de gagner de l'argent en complétant des quêtes quotidiennes. Les utilisateurs déposent de l'argent via BNB (BEP20) et gagnent 50% de leur dépôt à chaque quête complétée (max 4 quêtes par jour).
 
 ## Architecture
 - **Backend**: Flask avec Flask-Login pour l'authentification
 - **Base de données**: PostgreSQL avec Flask-SQLAlchemy
-- **Frontend**: Templates Jinja2 avec CSS/JS vanilla
+- **Frontend**: Templates Jinja2 avec CSS moderne
+- **Sécurité**: Protection CSRF sur tous les formulaires
 
 ## Structure du projet
 ```
@@ -18,17 +19,22 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 │   ├── login.html      # Connexion
 │   ├── register.html   # Inscription
 │   ├── dashboard.html  # Tableau de bord avec quêtes
-│   ├── deposit.html    # Page de dépôt
+│   ├── deposit.html    # Page de dépôt avec adresse BNB
 │   └── history.html    # Historique des quêtes
 ├── static/
-│   ├── style.css       # Styles CSS
+│   ├── style.css       # Styles CSS professionnels
 │   └── script.js       # JavaScript frontend
 ```
 
+## Configuration
+- **Adresse de dépôt BNB (BEP20)**: 0x4dc2eac23fa51001d5acc94889177ec066cc389c
+- **Minimum de dépôt**: 200$
+- **Gain par quête**: 50% du dépôt
+- **Quêtes par jour**: 4 maximum
+
 ## Fonctionnalités
-- Inscription/Connexion utilisateur
-- Ajout d'argent au solde
-- Dépôt pour débloquer les quêtes
+- Inscription/Connexion utilisateur sécurisée
+- Dépôt via cryptomonnaie BNB (BEP20)
 - 4 quêtes disponibles par jour
 - Gain de 50% du dépôt par quête complétée
 - Retrait des gains
