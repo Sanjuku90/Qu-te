@@ -6,8 +6,14 @@
         <h1>Bienvenue, {{ current_user.username }} 👋</h1>
         <div class="stats-grid">
             <div class="stat-card">
-                <span class="stat-label">Solde disponible</span>
+                <span class="stat-label">Solde Quêtes</span>
                 <span class="stat-value" id="current-balance">{{ "%.2f"|format(current_user.balance) }}$</span>
+                <small style="color: #888; font-size: 0.75rem;">Limite: 150$/jour</small>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Solde Parrainage</span>
+                <span class="stat-value">{{ "%.2f"|format(current_user.referral_balance or 0) }}$</span>
+                <small style="color: #28a745; font-size: 0.75rem;">Sans limite</small>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Dépôt actif</span>
@@ -88,8 +94,15 @@
             <form method="POST" action="{{ url_for('request_withdrawal') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    <label>Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}$)</label>
-                    <input type="number" name="amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required placeholder="0.00">
+                    <label>Type de solde</label>
+                    <select name="balance_type" id="balance_type" onchange="updateMaxAmount()">
+                        <option value="balance">Solde Quêtes ({{ "%.2f"|format(current_user.balance) }}$ - limite 150$/jour)</option>
+                        <option value="referral_balance">Solde Parrainage ({{ "%.2f"|format(current_user.referral_balance or 0) }}$ - sans limite)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="amount-label">Montant à retirer (max: {{ "%.2f"|format(current_user.balance) }}$)</label>
+                    <input type="number" name="amount" id="withdraw-amount" step="0.01" min="0.01" max="{{ current_user.balance }}" required placeholder="0.00">
                 </div>
                 <div class="form-group">
                     <label>Adresse de portefeuille (BEP20)</label>

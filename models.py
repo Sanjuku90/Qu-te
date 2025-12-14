@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
     referral_code = db.Column(db.String(10), unique=True, default=generate_referral_code)
     referred_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     referral_bonus_earned = db.Column(db.Float, default=0.0)
+    referral_balance = db.Column(db.Float, default=0.0)
     
     quests = db.relationship('QuestCompletion', backref='user', lazy=True)
     transactions = db.relationship('Transaction', backref='user', lazy=True, foreign_keys='Transaction.user_id')
@@ -48,6 +49,7 @@ class User(UserMixin, db.Model):
         total = db.session.query(db.func.sum(Transaction.amount)).filter(
             Transaction.user_id == self.id,
             Transaction.type == 'withdrawal',
+            Transaction.balance_type == 'balance',
             db.func.date(Transaction.created_at) == today
         ).scalar()
         return total or 0.0
@@ -79,6 +81,7 @@ class Transaction(db.Model):
     wallet_address = db.Column(db.String(100))
     tx_hash = db.Column(db.String(100))
     admin_note = db.Column(db.Text)
+    balance_type = db.Column(db.String(20), default='balance')  # 'balance' or 'referral_balance'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     processed_at = db.Column(db.DateTime)
     processed_by = db.Column(db.Integer, db.ForeignKey('user.id'))

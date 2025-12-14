@@ -302,36 +302,44 @@ def request_withdrawal():
         return redirect(url_for('dashboard'))
     
     wallet_address = request.form.get('wallet_address', '').strip()
+    balance_type = request.form.get('balance_type', 'balance')
     
     if amount <= 0:
         flash('Le montant doit être positif.', 'error')
-        return redirect(url_for('dashboard'))
-    
-    if amount > current_user.balance:
-        flash('Solde insuffisant.', 'error')
         return redirect(url_for('dashboard'))
     
     if not wallet_address:
         flash('Adresse de portefeuille requise.', 'error')
         return redirect(url_for('dashboard'))
     
-    daily_total = current_user.get_daily_withdrawal_total()
-    if daily_total + amount > DAILY_WITHDRAWAL_LIMIT:
-        remaining = DAILY_WITHDRAWAL_LIMIT - daily_total
-        if remaining <= 0:
-            flash(f'Vous avez atteint la limite de retrait journalier de {DAILY_WITHDRAWAL_LIMIT:.2f}$.', 'error')
-        else:
-            flash(f'Ce retrait dépasse la limite journalière. Il vous reste {remaining:.2f}$ disponibles aujourd\'hui.', 'error')
-        return redirect(url_for('dashboard'))
+    if balance_type == 'referral_balance':
+        if amount > current_user.referral_balance:
+            flash('Solde de parrainage insuffisant.', 'error')
+            return redirect(url_for('dashboard'))
+        current_user.referral_balance -= amount
+    else:
+        if amount > current_user.balance:
+            flash('Solde insuffisant.', 'error')
+            return redirect(url_for('dashboard'))
+        
+        daily_total = current_user.get_daily_withdrawal_total()
+        if daily_total + amount > DAILY_WITHDRAWAL_LIMIT:
+            remaining = DAILY_WITHDRAWAL_LIMIT - daily_total
+            if remaining <= 0:
+                flash(f'Vous avez atteint la limite de retrait journalier de {DAILY_WITHDRAWAL_LIMIT:.2f}$.', 'error')
+            else:
+                flash(f'Ce retrait dépasse la limite journalière. Il vous reste {remaining:.2f}$ disponibles aujourd\'hui.', 'error')
+            return redirect(url_for('dashboard'))
+        current_user.balance -= amount
     
     transaction = Transaction(
         user_id=current_user.id,
         type='withdrawal',
         amount=amount,
         wallet_address=wallet_address,
+        balance_type=balance_type,
         status='pending'
     )
-    current_user.balance -= amount
     db.session.add(transaction)
     db.session.commit()
     
@@ -553,7 +561,7 @@ def approve_transaction(tx_id):
         if previous_approved_deposits == 0 and user.referred_by_id:
             referrer = User.query.get(user.referred_by_id)
             if referrer:
-                referrer.balance += REFERRAL_BONUS
+                referrer.referral_balance = (referrer.referral_balance or 0) + REFERRAL_BONUS
                 referrer.referral_bonus_earned = (referrer.referral_bonus_earned or 0) + REFERRAL_BONUS
     
     db.session.commit()
@@ -576,7 +584,10 @@ def reject_transaction(tx_id):
     
     if transaction.type == 'withdrawal':
         user = User.query.get(transaction.user_id)
-        user.balance += transaction.amount
+        if transaction.balance_type == 'referral_balance':
+            user.referral_balance = (user.referral_balance or 0) + transaction.amount
+        else:
+            user.balance += transaction.amount
     
     db.session.commit()
     flash(f'Transaction #{tx_id} rejetée.', 'success')

@@ -48,6 +48,25 @@ function toggleWithdraw() {
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
+function updateMaxAmount() {
+    const select = document.getElementById('balance_type');
+    const amountInput = document.getElementById('withdraw-amount');
+    const amountLabel = document.getElementById('amount-label');
+    
+    if (!select || !amountInput) return;
+    
+    const balanceValue = parseFloat(select.options[0].text.match(/\((\d+\.?\d*)\$/)?.[1] || 0);
+    const referralValue = parseFloat(select.options[1].text.match(/\((\d+\.?\d*)\$/)?.[1] || 0);
+    
+    if (select.value === 'referral_balance') {
+        amountInput.max = referralValue;
+        if (amountLabel) amountLabel.textContent = `Montant à retirer (max: ${referralValue.toFixed(2)}$ - sans limite journalière)`;
+    } else {
+        amountInput.max = balanceValue;
+        if (amountLabel) amountLabel.textContent = `Montant à retirer (max: ${balanceValue.toFixed(2)}$)`;
+    }
+}
+
 function showNotification(message, type) {
     const existing = document.querySelector('.notification');
     if (existing) existing.remove();
