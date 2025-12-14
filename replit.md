@@ -41,9 +41,11 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 - Dépôt via cryptomonnaie BNB (BEP20)
 - 4 quêtes disponibles par jour
 - Gain de 50% du dépôt par quête complétée
-- Retrait des gains (limite journalière de 150$)
+- **Deux types de soldes séparés:**
+  - **Solde Quêtes**: Gains des quêtes (limite de retrait 150$/jour)
+  - **Solde Parrainage**: Bonus de parrainage (retrait sans limite)
 - Historique des quêtes complétées
-- Système de parrainage avec bonus de 10$ au premier dépôt du filleul
+- Système de parrainage avec bonus de 10$ au premier dépôt du filleul (ajouté au solde parrainage)
 - Page de profil avec modification du mot de passe et statistiques de parrainage
 
 ## PWA (Progressive Web App)
