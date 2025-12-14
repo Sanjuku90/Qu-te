@@ -548,6 +548,10 @@ def approve_transaction(tx_id):
     transaction.admin_note = request.form.get('note', '')
     
     user = User.query.get(transaction.user_id)
+    if not user:
+        flash('Utilisateur non trouvé pour cette transaction.', 'error')
+        return redirect(url_for('admin_transactions'))
+    
     if transaction.type == 'deposit':
         previous_approved_deposits = Transaction.query.filter(
             Transaction.user_id == user.id, 
@@ -584,10 +588,11 @@ def reject_transaction(tx_id):
     
     if transaction.type == 'withdrawal':
         user = User.query.get(transaction.user_id)
-        if transaction.balance_type == 'referral_balance':
-            user.referral_balance = (user.referral_balance or 0) + transaction.amount
-        else:
-            user.balance += transaction.amount
+        if user:
+            if transaction.balance_type == 'referral_balance':
+                user.referral_balance = (user.referral_balance or 0) + transaction.amount
+            else:
+                user.balance += transaction.amount
     
     db.session.commit()
     flash(f'Transaction #{tx_id} rejetée.', 'success')
