@@ -28,7 +28,7 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 
 ## Configuration
 - **Adresse de dépôt BNB (BEP20)**: 0x4dc2eac23fa51001d5acc94889177ec066cc389c
-- **Minimum de dépôt**: 200$
+- **Minimum de dépôt**: 100$
 - **Gain par quête**: 50% du dépôt
 - **Quêtes par jour**: 4 maximum
 

@@ -242,8 +242,8 @@ def deposit():
             flash('Montant invalide.', 'error')
             return redirect(url_for('deposit'))
         
-        if amount < 200:
-            flash('Le minimum de dépôt est de 200$.', 'error')
+        if amount < 100:
+            flash('Le minimum de dépôt est de 100$.', 'error')
             return redirect(url_for('deposit'))
         
         if amount > current_user.balance:

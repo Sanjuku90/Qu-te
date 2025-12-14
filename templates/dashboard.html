@@ -26,7 +26,7 @@
     
     {% if current_user.deposit == 0 %}
     <div class="alert alert-warning">
-        <p>⚠️ Vous devez effectuer un dépôt minimum de 200$ pour débloquer les quêtes. <a href="{{ url_for('deposit') }}">Faire un dépôt</a></p>
+        <p>⚠️ Vous devez effectuer un dépôt minimum de 100$ pour débloquer les quêtes. <a href="{{ url_for('deposit') }}">Faire un dépôt</a></p>
     </div>
     {% endif %}
     

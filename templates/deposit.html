@@ -25,7 +25,7 @@
             <div class="crypto-info">
                 <div class="info-item">
                     <span class="info-icon">💰</span>
-                    <span>Minimum: <strong>200 USDT</strong></span>
+                    <span>Minimum: <strong>100 USDT</strong></span>
                 </div>
                 <div class="info-item">
                     <span class="info-icon">⚡</span>
@@ -47,7 +47,7 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="amount">Montant envoyé (USDT)</label>
-                    <input type="number" id="request-amount" name="amount" step="0.01" min="200" required placeholder="200.00">
+                    <input type="number" id="request-amount" name="amount" step="0.01" min="100" required placeholder="100.00">
                 </div>
                 <div class="form-group">
                     <label for="tx_hash">Hash de transaction (optionnel)</label>
@@ -97,19 +97,19 @@
         <div class="deposit-card">
             <h2>Activer les quêtes</h2>
             <p class="current-value">Dépôt actuel: {{ "%.2f"|format(current_user.deposit) }}$</p>
-            <p class="deposit-info">Minimum requis: <strong>200$</strong></p>
+            <p class="deposit-info">Minimum requis: <strong>100$</strong></p>
             <form method="POST" action="{{ url_for('deposit') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label for="amount">Montant à déposer (depuis votre solde)</label>
-                    <input type="number" id="deposit-amount" name="amount" step="0.01" min="200" max="{{ current_user.balance }}" required placeholder="200.00">
+                    <input type="number" id="deposit-amount" name="amount" step="0.01" min="100" max="{{ current_user.balance }}" required placeholder="100.00">
                 </div>
-                <button type="submit" class="btn btn-primary btn-full" {% if current_user.balance < 200 %}disabled{% endif %}>
+                <button type="submit" class="btn btn-primary btn-full" {% if current_user.balance < 100 %}disabled{% endif %}>
                     Activer les quêtes
                 </button>
             </form>
-            {% if current_user.balance < 200 %}
-            <p class="deposit-warning">Solde minimum de 200$ requis</p>
+            {% if current_user.balance < 100 %}
+            <p class="deposit-warning">Solde minimum de 100$ requis</p>
             {% endif %}
         </div>
     </div>
@@ -120,7 +120,7 @@
             <div class="step">
                 <div class="step-number">1</div>
                 <h4>Envoyez vos cryptos</h4>
-                <p>Envoyez minimum 200$ en BNB ou USDT à l'adresse ci-dessus</p>
+                <p>Envoyez minimum 100$ en BNB ou USDT à l'adresse ci-dessus</p>
             </div>
             <div class="step">
                 <div class="step-number">2</div>
