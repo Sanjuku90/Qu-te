@@ -358,9 +358,15 @@ def complete_quest(quest_id):
         return jsonify({'success': False, 'message': 'Vous avez déjà complété cette quête aujourd\'hui.'})
     
     if quest.action_type == 'referral':
-        referral_count = User.query.filter_by(referred_by_id=current_user.id).count()
-        if referral_count == 0:
-            return jsonify({'success': False, 'message': 'Vous devez parrainer au moins une personne pour valider cette quête. Partagez votre lien de parrainage depuis votre profil!'})
+        referrals_with_deposit = User.query.filter_by(referred_by_id=current_user.id).join(
+            Transaction, Transaction.user_id == User.id
+        ).filter(
+            Transaction.type == 'deposit',
+            Transaction.status == 'approved'
+        ).distinct().count()
+        
+        if referrals_with_deposit == 0:
+            return jsonify({'success': False, 'message': 'Vous devez parrainer au moins une personne qui a effectué un dépôt validé pour compléter cette quête. Partagez votre lien de parrainage depuis votre profil!'})
     
     reward = current_user.deposit * 0.5
     
