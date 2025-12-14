@@ -333,6 +333,11 @@ def complete_quest(quest_id):
     if today_completion:
         return jsonify({'success': False, 'message': 'Vous avez déjà complété cette quête aujourd\'hui.'})
     
+    if quest.action_type == 'referral':
+        referral_count = User.query.filter_by(referred_by_id=current_user.id).count()
+        if referral_count == 0:
+            return jsonify({'success': False, 'message': 'Vous devez parrainer au moins une personne pour valider cette quête. Partagez votre lien de parrainage depuis votre profil!'})
+    
     reward = current_user.deposit * 0.5
     
     completion = QuestCompletion(
