@@ -16,7 +16,7 @@ services:
         fromDatabase:
           name: questmoney-db
           property: connectionString
-      - key: SECRET_KEY
+      - key: SESSION_SECRET
         generateValue: true
       - key: PYTHON_VERSION
         value: 3.11.0
