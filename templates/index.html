@@ -1,46 +1,625 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="hero">
-    <div class="hero-content">
-        <h1>Gagnez de l'argent avec des quêtes</h1>
-        <p class="hero-subtitle">Déposez minimum 100$, complétez 4 quêtes par jour et gagnez 50% de votre dépôt à chaque quête complétée!</p>
-        <div class="hero-buttons">
-            <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">🚀 Commencer maintenant</a>
-            <a href="{{ url_for('login') }}" class="btn btn-outline btn-large">Se connecter</a>
+<div class="landing-page">
+    <section class="hero-modern">
+        <div class="hero-bg-effects">
+            <div class="glow-circle glow-1"></div>
+            <div class="glow-circle glow-2"></div>
+            <div class="floating-coins">
+                <span class="coin coin-1">$</span>
+                <span class="coin coin-2">$</span>
+                <span class="coin coin-3">$</span>
+            </div>
         </div>
-    </div>
-</section>
+        <div class="hero-main">
+            <div class="hero-badge">
+                <i class="fas fa-bolt"></i> Plateforme #1 de Quêtes Crypto
+            </div>
+            <h1 class="hero-title">
+                Transformez vos <span class="highlight">quêtes</span> en <span class="highlight-gold">revenus</span>
+            </h1>
+            <p class="hero-description">
+                Rejoignez des milliers d'utilisateurs qui gagnent jusqu'à 200% de leur dépôt chaque jour en complétant des missions simples.
+            </p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Par quête</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Quêtes/jour</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="stat-number">100$</span>
+                    <span class="stat-label">Minimum</span>
+                </div>
+            </div>
+            <div class="hero-cta">
+                <a href="{{ url_for('register') }}" class="btn-hero-primary">
+                    <i class="fas fa-rocket"></i> Commencer maintenant
+                </a>
+                <a href="{{ url_for('login') }}" class="btn-hero-secondary">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </a>
+            </div>
+        </div>
+    </section>
 
-<section class="features">
-    <h2>Comment ça marche?</h2>
-    <div class="feature-grid">
-        <div class="feature-card">
-            <div class="feature-icon">💰</div>
-            <h3>1. Déposez</h3>
-            <p>Envoyez minimum 100$ en BNB (BEP20) pour activer votre compte</p>
+    <section class="how-it-works">
+        <div class="section-header">
+            <span class="section-badge">Simple & Rapide</span>
+            <h2>Comment gagner de l'argent?</h2>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">⚔️</div>
-            <h3>2. Complétez</h3>
-            <p>Réalisez jusqu'à 4 quêtes différentes chaque jour</p>
+        <div class="steps-timeline">
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-content">
+                    <span class="step-num">01</span>
+                    <h3>Deposez en Crypto</h3>
+                    <p>Envoyez minimum 100$ en BNB ou USDT via le reseau BEP20</p>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-content">
+                    <span class="step-num">02</span>
+                    <h3>Completez les Quetes</h3>
+                    <p>Realisez 4 missions simples chaque jour sur les reseaux sociaux</p>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-content">
+                    <span class="step-num">03</span>
+                    <h3>Gagnez 50% par Quete</h3>
+                    <p>Chaque mission completee vous rapporte 50% de votre depot</p>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="step-content">
+                    <span class="step-num">04</span>
+                    <h3>Retirez vos Gains</h3>
+                    <p>Transferez vos gains directement vers votre portefeuille crypto</p>
+                </div>
+            </div>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">🎁</div>
-            <h3>3. Gagnez 50%</h3>
-            <p>Recevez 50% de votre dépôt en récompense pour chaque quête</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">💸</div>
-            <h3>4. Retirez</h3>
-            <p>Retirez vos gains à tout moment vers votre portefeuille</p>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section class="cta">
-    <h2>Prêt à commencer?</h2>
-    <p>Inscrivez-vous gratuitement et commencez à gagner dès aujourd'hui!</p>
-    <a href="{{ url_for('register') }}" class="btn btn-large">Créer mon compte</a>
-</section>
+    <section class="earnings-calc">
+        <div class="calc-card">
+            <div class="calc-left">
+                <h2><i class="fas fa-calculator"></i> Calculez vos gains potentiels</h2>
+                <p>Avec un depot de 100$, completez 4 quetes par jour</p>
+            </div>
+            <div class="calc-right">
+                <div class="earning-row">
+                    <span class="earning-label">Gain par quete</span>
+                    <span class="earning-value">+50$</span>
+                </div>
+                <div class="earning-row">
+                    <span class="earning-label">4 quetes/jour</span>
+                    <span class="earning-value highlight">+200$/jour</span>
+                </div>
+                <div class="earning-row total">
+                    <span class="earning-label">Potentiel mensuel</span>
+                    <span class="earning-value gold">+6000$</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-section">
+        <div class="trust-grid">
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <h4>Securise</h4>
+                <p>Protection maximale de vos fonds</p>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-bolt"></i>
+                <h4>Rapide</h4>
+                <p>Retraits traites en 24h</p>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <h4>Support 24/7</h4>
+                <p>Assistance disponible a tout moment</p>
+            </div>
+            <div class="trust-item">
+                <i class="fab fa-bitcoin"></i>
+                <h4>Multi-Crypto</h4>
+                <p>BNB, USDT et plus encore</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="cta-content">
+            <h2>Pret a commencer a gagner?</h2>
+            <p>Inscrivez-vous maintenant et recevez votre premiere quete en quelques minutes</p>
+            <a href="{{ url_for('register') }}" class="btn-cta-large">
+                <i class="fas fa-user-plus"></i> Creer mon compte gratuitement
+            </a>
+            <span class="cta-note">Aucun frais d'inscription - Commencez immediatement</span>
+        </div>
+    </section>
+</div>
+
+<style>
+.landing-page {
+    overflow-x: hidden;
+}
+
+.hero-modern {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.hero-bg-effects {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.glow-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+}
+
+.glow-1 {
+    width: 500px;
+    height: 500px;
+    background: var(--primary);
+    top: -200px;
+    left: -100px;
+    animation: float 8s ease-in-out infinite;
+}
+
+.glow-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--gold);
+    bottom: -150px;
+    right: -100px;
+    animation: float 6s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 30px); }
+}
+
+.floating-coins {
+    position: absolute;
+    inset: 0;
+}
+
+.coin {
+    position: absolute;
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.3;
+    animation: coinFloat 10s ease-in-out infinite;
+}
+
+.coin-1 { top: 20%; left: 15%; animation-delay: 0s; }
+.coin-2 { top: 60%; right: 20%; animation-delay: 2s; }
+.coin-3 { bottom: 30%; left: 25%; animation-delay: 4s; }
+
+@keyframes coinFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+    50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+}
+
+.hero-main {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    margin-bottom: 1.5rem;
+}
+
+.hero-badge i {
+    color: var(--gold);
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.hero-title .highlight {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-title .highlight-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.hero-stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border-light);
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--gradient-gold);
+    color: #000;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(251, 191, 36, 0.4);
+}
+
+.btn-hero-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--surface-light);
+    color: var(--text);
+    padding: 1rem 2rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border: 1px solid var(--border-light);
+    transition: all 0.3s ease;
+}
+
+.btn-hero-secondary:hover {
+    background: var(--surface-lighter);
+    border-color: var(--primary);
+}
+
+.how-it-works {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-badge {
+    display: inline-block;
+    background: var(--primary-50);
+    color: var(--primary-light);
+    padding: 0.375rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.steps-timeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.step-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow);
+}
+
+.step-icon {
+    width: 70px;
+    height: 70px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 1.75rem;
+    color: white;
+}
+
+.step-num {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(251, 191, 36, 0.15);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    margin-bottom: 0.75rem;
+}
+
+.step-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.step-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.earnings-calc {
+    padding: 3rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.calc-card {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .calc-card {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+    }
+}
+
+.calc-left h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.calc-left h2 i {
+    color: var(--gold);
+}
+
+.calc-left p {
+    color: var(--text-secondary);
+}
+
+.earning-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.earning-row.total {
+    border-bottom: none;
+    padding-top: 1rem;
+}
+
+.earning-label {
+    color: var(--text-secondary);
+}
+
+.earning-value {
+    font-weight: 700;
+    color: var(--success);
+}
+
+.earning-value.highlight {
+    color: var(--primary-light);
+    font-size: 1.1rem;
+}
+
+.earning-value.gold {
+    color: var(--gold);
+    font-size: 1.5rem;
+}
+
+.trust-section {
+    padding: 4rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.trust-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.trust-item i {
+    font-size: 2rem;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+}
+
+.trust-item h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.trust-item p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.final-cta {
+    padding: 6rem 2rem;
+    text-align: center;
+    background: var(--gradient-glow);
+}
+
+.cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.cta-content p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-cta-large {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--gradient-gold);
+    color: #000;
+    padding: 1.25rem 2.5rem;
+    border-radius: var(--radius-lg);
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 25px rgba(251, 191, 36, 0.35);
+}
+
+.btn-cta-large:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 35px rgba(251, 191, 36, 0.45);
+}
+
+.cta-note {
+    display: block;
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+@media (max-width: 600px) {
+    .hero-stats {
+        gap: 1rem;
+    }
+    .stat-divider {
+        display: none;
+    }
+    .hero-cta {
+        flex-direction: column;
+    }
+    .btn-hero-primary, .btn-hero-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
 {% endblock %}
