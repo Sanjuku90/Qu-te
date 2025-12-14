@@ -37,8 +37,10 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 - Dépôt via cryptomonnaie BNB (BEP20)
 - 4 quêtes disponibles par jour
 - Gain de 50% du dépôt par quête complétée
-- Retrait des gains
+- Retrait des gains (limite journalière de 150$)
 - Historique des quêtes complétées
+- Système de parrainage avec bonus de 10$ au premier dépôt du filleul
+- Page de profil avec modification du mot de passe et statistiques de parrainage
 
 ## Lancement
 ```bash
