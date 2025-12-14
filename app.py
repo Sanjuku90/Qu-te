@@ -109,36 +109,7 @@ def create_admin():
         db.session.add(admin)
         db.session.commit()
 
-def run_migrations():
-    """Add missing columns to existing database tables"""
-    from sqlalchemy import text, inspect
-    
-    inspector = inspect(db.engine)
-    
-    if 'user' in inspector.get_table_names():
-        columns = [col['name'] for col in inspector.get_columns('user')]
-        
-        migrations = []
-        if 'referral_balance' not in columns:
-            migrations.append("ALTER TABLE \"user\" ADD COLUMN referral_balance FLOAT DEFAULT 0.0")
-        if 'referral_bonus_earned' not in columns:
-            migrations.append("ALTER TABLE \"user\" ADD COLUMN referral_bonus_earned FLOAT DEFAULT 0.0")
-        if 'referral_code' not in columns:
-            migrations.append("ALTER TABLE \"user\" ADD COLUMN referral_code VARCHAR(10) UNIQUE")
-        if 'referred_by_id' not in columns:
-            migrations.append("ALTER TABLE \"user\" ADD COLUMN referred_by_id INTEGER REFERENCES \"user\"(id)")
-        
-        for migration in migrations:
-            try:
-                db.session.execute(text(migration))
-                db.session.commit()
-                print(f"Migration executed: {migration}")
-            except Exception as e:
-                db.session.rollback()
-                print(f"Migration skipped (may already exist): {e}")
-
 with app.app_context():
-    run_migrations()
     db.create_all()
     init_quests()
     create_admin()
