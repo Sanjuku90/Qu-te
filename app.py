@@ -54,12 +54,12 @@ def init_quests():
                 action_type="subscribe"
             ),
             Quest(
-                title="Suivre sur Instagram",
-                description="Suivez notre compte Instagram officiel",
-                icon="instagram",
+                title="Inviter un ami",
+                description="Parrainez au moins une personne avec votre lien de parrainage",
+                icon="users",
                 order=2,
-                action_url="https://www.instagram.com/mrbeast",
-                action_type="follow"
+                action_url="",
+                action_type="referral"
             ),
             Quest(
                 title="Rejoindre Telegram",
