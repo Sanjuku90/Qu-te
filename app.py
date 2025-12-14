@@ -200,7 +200,20 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    quests = Quest.query.all()
+    from datetime import timedelta
+    
+    all_quests = Quest.query.all()
+    
+    days_since_registration = (datetime.utcnow() - current_user.created_at).days if current_user.created_at else 0
+    
+    quests = []
+    for quest in all_quests:
+        if quest.action_type == 'referral':
+            if days_since_registration >= 2:
+                quests.append(quest)
+        else:
+            quests.append(quest)
+    
     completed_today = current_user.get_completed_quests_today()
     today_completions = QuestCompletion.query.filter(
         QuestCompletion.user_id == current_user.id,
