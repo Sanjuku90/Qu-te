@@ -55,8 +55,8 @@ function updateMaxAmount() {
     
     if (!select || !amountInput) return;
     
-    const balanceValue = parseFloat(select.options[0].text.match(/\((\d+\.?\d*)\$/)?.[1] || 0);
-    const referralValue = parseFloat(select.options[1].text.match(/\((\d+\.?\d*)\$/)?.[1] || 0);
+    const balanceValue = parseFloat(select.dataset.balance || 0);
+    const referralValue = parseFloat(select.dataset.referral || 0);
     
     if (select.value === 'referral_balance') {
         amountInput.max = referralValue;

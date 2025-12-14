@@ -95,7 +95,9 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <label>Type de solde</label>
-                    <select name="balance_type" id="balance_type" onchange="updateMaxAmount()">
+                    <select name="balance_type" id="balance_type" onchange="updateMaxAmount()" 
+                            data-balance="{{ "%.2f"|format(current_user.balance) }}" 
+                            data-referral="{{ "%.2f"|format(current_user.referral_balance or 0) }}">
                         <option value="balance">Solde Quêtes ({{ "%.2f"|format(current_user.balance) }}$ - limite 150$/jour)</option>
                         <option value="referral_balance">Solde Parrainage ({{ "%.2f"|format(current_user.referral_balance or 0) }}$ - sans limite)</option>
                     </select>
