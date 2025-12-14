@@ -3,12 +3,14 @@ databases:
     databaseName: questmoney
     user: questmoney
     plan: free
+    region: oregon
 
 services:
   - type: web
     name: questmoney
     runtime: python
     plan: free
+    region: oregon
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn main:app
     envVars:
