@@ -242,6 +242,8 @@ def request_deposit():
 @app.route('/request_withdrawal', methods=['POST'])
 @login_required
 def request_withdrawal():
+    DAILY_WITHDRAWAL_LIMIT = 150.0
+    
     try:
         amount = float(request.form.get('amount', 0))
     except (ValueError, TypeError):
@@ -260,6 +262,15 @@ def request_withdrawal():
     
     if not wallet_address:
         flash('Adresse de portefeuille requise.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    daily_total = current_user.get_daily_withdrawal_total()
+    if daily_total + amount > DAILY_WITHDRAWAL_LIMIT:
+        remaining = DAILY_WITHDRAWAL_LIMIT - daily_total
+        if remaining <= 0:
+            flash(f'Vous avez atteint la limite de retrait journalier de {DAILY_WITHDRAWAL_LIMIT:.2f}$.', 'error')
+        else:
+            flash(f'Ce retrait dépasse la limite journalière. Il vous reste {remaining:.2f}$ disponibles aujourd\'hui.', 'error')
         return redirect(url_for('dashboard'))
     
     transaction = Transaction(

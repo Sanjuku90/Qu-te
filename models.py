@@ -33,6 +33,15 @@ class User(UserMixin, db.Model):
     
     def can_complete_quest(self):
         return self.get_completed_quests_today() < 4 and self.deposit > 0
+    
+    def get_daily_withdrawal_total(self):
+        today = date.today()
+        total = db.session.query(db.func.sum(Transaction.amount)).filter(
+            Transaction.user_id == self.id,
+            Transaction.type == 'withdrawal',
+            db.func.date(Transaction.created_at) == today
+        ).scalar()
+        return total or 0.0
 
 class Quest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
