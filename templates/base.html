@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="QuestMoney">
+    <meta name="description" content="Gagnez de l'argent en complétant des quêtes quotidiennes">
     <title>QuestMoney - Gagnez de l'argent avec des quêtes</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -149,6 +156,18 @@
     
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker enregistré avec succès:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Échec enregistrement ServiceWorker:', error);
+                    });
+            });
+        }
+        
         function toggleUserMenu() {
             const dropdown = document.getElementById('userDropdown');
             const trigger = document.querySelector('.user-menu-trigger');

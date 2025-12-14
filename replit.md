@@ -20,10 +20,14 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 │   ├── register.html   # Inscription
 │   ├── dashboard.html  # Tableau de bord avec quêtes
 │   ├── deposit.html    # Page de dépôt avec adresse BNB
-│   └── history.html    # Historique des quêtes
+│   ├── history.html    # Historique des quêtes
+│   └── offline.html    # Page hors-ligne PWA
 ├── static/
 │   ├── style.css       # Styles CSS professionnels
-│   └── script.js       # JavaScript frontend
+│   ├── script.js       # JavaScript frontend
+│   ├── manifest.json   # Manifest PWA
+│   ├── service-worker.js # Service Worker pour mode hors-ligne
+│   └── icons/          # Icônes PWA (72x72 à 512x512)
 ```
 
 ## Configuration
@@ -41,6 +45,14 @@ Application web de quêtes permettant aux utilisateurs de gagner de l'argent en 
 - Historique des quêtes complétées
 - Système de parrainage avec bonus de 10$ au premier dépôt du filleul
 - Page de profil avec modification du mot de passe et statistiques de parrainage
+
+## PWA (Progressive Web App)
+L'application est installable sur mobile et ordinateur avec support hors-ligne:
+- **Installation**: Les utilisateurs peuvent ajouter l'app à leur écran d'accueil
+- **Mode hors-ligne**: Pages et ressources mises en cache pour accès rapide
+- **Page offline**: Affichage élégant quand l'utilisateur est déconnecté
+- **Service Worker**: Cache les ressources statiques et gère les requêtes hors-ligne
+- **Manifest**: Configuration complète avec icônes, couleurs et thème
 
 ## Lancement local
 ```bash

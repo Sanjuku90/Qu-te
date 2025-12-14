@@ -635,9 +635,22 @@ def admin_quick_add_balance():
     db.session.commit()
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/offline')
+def offline():
+    return render_template('offline.html')
+
+@app.route('/service-worker.js')
+def service_worker():
+    from flask import send_from_directory
+    return send_from_directory('static', 'service-worker.js', mimetype='application/javascript')
+
 @app.after_request
 def add_header(response):
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    if 'service-worker.js' in request.path:
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Service-Worker-Allowed'] = '/'
+    else:
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
     return response
