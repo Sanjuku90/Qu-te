@@ -43,44 +43,60 @@ def admin_required(f):
     return decorated_function
 
 def init_quests():
-    if Quest.query.count() == 0:
-        quests = [
-            Quest(
-                title="Suivre MrBeast sur YouTube",
-                description="Abonnez-vous à la chaîne YouTube de MrBeast",
-                icon="youtube",
-                order=1,
-                action_url="https://www.youtube.com/@MrBeast",
-                action_type="subscribe"
-            ),
-            Quest(
-                title="Inviter un ami",
-                description="Parrainez au moins une personne avec votre lien de parrainage",
-                icon="users",
-                order=2,
-                action_url="",
-                action_type="referral"
-            ),
-            Quest(
-                title="Rejoindre Telegram",
-                description="Rejoignez notre groupe Telegram",
-                icon="telegram",
-                order=3,
-                action_url="https://t.me/mrbeast",
-                action_type="join"
-            ),
-            Quest(
-                title="Suivre sur TikTok",
-                description="Suivez notre compte TikTok",
-                icon="tiktok",
-                order=4,
-                action_url="https://www.tiktok.com/@mrbeast",
-                action_type="follow"
-            ),
-        ]
-        for quest in quests:
-            db.session.add(quest)
-        db.session.commit()
+    quests_data = [
+        {
+            "order": 1,
+            "title": "Suivre MrBeast sur YouTube",
+            "description": "Abonnez-vous à la chaîne YouTube de MrBeast",
+            "icon": "youtube",
+            "action_url": "https://www.youtube.com/@MrBeast",
+            "action_type": "subscribe"
+        },
+        {
+            "order": 2,
+            "title": "Inviter un ami",
+            "description": "Parrainez au moins une personne avec votre lien de parrainage",
+            "icon": "users",
+            "action_url": "",
+            "action_type": "referral"
+        },
+        {
+            "order": 3,
+            "title": "Rejoindre Telegram",
+            "description": "Rejoignez notre groupe Telegram",
+            "icon": "telegram",
+            "action_url": "https://t.me/mrbeast",
+            "action_type": "join"
+        },
+        {
+            "order": 4,
+            "title": "Suivre sur TikTok",
+            "description": "Suivez notre compte TikTok",
+            "icon": "tiktok",
+            "action_url": "https://www.tiktok.com/@mrbeast",
+            "action_type": "follow"
+        },
+    ]
+    
+    for quest_data in quests_data:
+        existing_quest = Quest.query.filter_by(order=quest_data["order"]).first()
+        if existing_quest:
+            existing_quest.title = quest_data["title"]
+            existing_quest.description = quest_data["description"]
+            existing_quest.icon = quest_data["icon"]
+            existing_quest.action_url = quest_data["action_url"]
+            existing_quest.action_type = quest_data["action_type"]
+        else:
+            new_quest = Quest(
+                title=quest_data["title"],
+                description=quest_data["description"],
+                icon=quest_data["icon"],
+                order=quest_data["order"],
+                action_url=quest_data["action_url"],
+                action_type=quest_data["action_type"]
+            )
+            db.session.add(new_quest)
+    db.session.commit()
 
 def create_admin():
     admin = User.query.filter_by(email='admin@questmoney.com').first()
