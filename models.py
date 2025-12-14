@@ -2,8 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
 
 db = SQLAlchemy()
+
+def generate_referral_code():
+    return secrets.token_urlsafe(6).upper()[:8]
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,8 +19,13 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    referral_code = db.Column(db.String(10), unique=True, default=generate_referral_code)
+    referred_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    referral_bonus_earned = db.Column(db.Float, default=0.0)
+    
     quests = db.relationship('QuestCompletion', backref='user', lazy=True)
     transactions = db.relationship('Transaction', backref='user', lazy=True, foreign_keys='Transaction.user_id')
+    referrals = db.relationship('User', backref=db.backref('referred_by', remote_side='User.id'), foreign_keys='User.referred_by_id')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

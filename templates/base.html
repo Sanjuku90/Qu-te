@@ -40,6 +40,9 @@
                     <a href="{{ url_for('history') }}" class="mobile-nav-item">
                         <i class="fas fa-clock-rotate-left"></i> Historique
                     </a>
+                    <a href="{{ url_for('profile') }}" class="mobile-nav-item">
+                        <i class="fas fa-user-circle"></i> Profil
+                    </a>
                     {% if current_user.is_admin %}
                     <a href="{{ url_for('admin_dashboard') }}" class="mobile-nav-item admin-link">
                         <i class="fas fa-shield-halved"></i> Admin
@@ -79,6 +82,10 @@
                         <a href="{{ url_for('history') }}" class="dropdown-item">
                             <i class="fas fa-clock-rotate-left"></i>
                             <span>Historique</span>
+                        </a>
+                        <a href="{{ url_for('profile') }}" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Profil</span>
                         </a>
                         {% if current_user.is_admin %}
                         <div class="dropdown-divider"></div>

@@ -97,15 +97,20 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
+REFERRAL_BONUS = 10.0
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     
+    ref_code = request.args.get('ref', '')
+    
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
+        referral_code = request.form.get('referral_code', '').strip()
         
         if not username or not email or not password:
             flash('Tous les champs sont requis.', 'error')
@@ -125,13 +130,19 @@ def register():
         
         user = User(username=username, email=email)
         user.set_password(password)
+        
+        if referral_code:
+            referrer = User.query.filter_by(referral_code=referral_code).first()
+            if referrer and not referrer.is_admin:
+                user.referred_by_id = referrer.id
+        
         db.session.add(user)
         db.session.commit()
         
         flash('Inscription réussie! Connectez-vous maintenant.', 'success')
         return redirect(url_for('login'))
     
-    return render_template('register.html')
+    return render_template('register.html', ref_code=ref_code)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -370,6 +381,40 @@ def history():
     transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).all()
     return render_template('history.html', completions=completions, transactions=transactions)
 
+@app.route('/profile')
+@login_required
+def profile():
+    referral_count = User.query.filter_by(referred_by_id=current_user.id).count()
+    referral_link = request.host_url + 'register?ref=' + (current_user.referral_code or '')
+    return render_template('profile.html', 
+                         referral_count=referral_count,
+                         referral_link=referral_link,
+                         referral_bonus=REFERRAL_BONUS)
+
+@app.route('/change_password', methods=['POST'])
+@login_required
+def change_password():
+    current_password = request.form.get('current_password', '')
+    new_password = request.form.get('new_password', '')
+    confirm_password = request.form.get('confirm_password', '')
+    
+    if not current_user.check_password(current_password):
+        flash('Mot de passe actuel incorrect.', 'error')
+        return redirect(url_for('profile'))
+    
+    if len(new_password) < 6:
+        flash('Le nouveau mot de passe doit contenir au moins 6 caracteres.', 'error')
+        return redirect(url_for('profile'))
+    
+    if new_password != confirm_password:
+        flash('Les mots de passe ne correspondent pas.', 'error')
+        return redirect(url_for('profile'))
+    
+    current_user.set_password(new_password)
+    db.session.commit()
+    flash('Mot de passe mis a jour avec succes!', 'success')
+    return redirect(url_for('profile'))
+
 # Admin Routes
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -445,7 +490,20 @@ def approve_transaction(tx_id):
     
     user = User.query.get(transaction.user_id)
     if transaction.type == 'deposit':
+        previous_approved_deposits = Transaction.query.filter(
+            Transaction.user_id == user.id, 
+            Transaction.type == 'deposit', 
+            Transaction.status == 'approved',
+            Transaction.id != transaction.id
+        ).count()
+        
         user.balance += transaction.amount
+        
+        if previous_approved_deposits == 0 and user.referred_by_id:
+            referrer = User.query.get(user.referred_by_id)
+            if referrer:
+                referrer.balance += REFERRAL_BONUS
+                referrer.referral_bonus_earned = (referrer.referral_bonus_earned or 0) + REFERRAL_BONUS
     
     db.session.commit()
     flash(f'Transaction #{tx_id} approuvée.', 'success')
